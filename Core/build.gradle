@@ -1,0 +1,50 @@
+plugins {
+    id 'java-library'
+    id 'org.jetbrains.kotlin.jvm'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
+
+}
+
+ext {
+    libraryVersion = '0.0.1'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+shadowJar {
+    mergeServiceFiles()
+}
+
+
+
+def shadow  = "shadowJar"
+def nameShadowBot = shadow + "Core"
+
+task shadowJarCore(type: Jar, dependsOn: shadowJar) {
+
+    archiveBaseName.set(nameShadowBot)
+    archiveClassifier.set('')
+    archiveVersion.set('')
+    from zipTree(shadowJar.archiveFile)
+}
+
+
+dependencies {
+    // Parser Html
+    api "com.squareup.okhttp3:okhttp:$okhttp_version"
+    api "org.jsoup:jsoup:$jsoup_version"
+    //logging
+    api "com.squareup.okhttp3:logging-interceptor:$okhttp_version"
+
+    api "com.google.code.gson:gson:$gson_version"
+
+}
+
+task printLibraryVersion {
+    doLast {
+        println project.property('libraryVersion')
+    }
+}

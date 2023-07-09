@@ -1,0 +1,448 @@
+package pe.fernan.downloader.data.remote
+
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.OkHttpClient
+import okhttp3.RequestBody.Companion.toRequestBody
+import org.jsoup.Jsoup
+import org.junit.Assert.*
+import org.junit.Test
+import pe.fernan.downloader.social.core.model.DataVideo
+import pe.fernan.downloader.social.data.remote.TiktokDownloadRepository
+import pe.fernan.downloader.social.core.utils.NiceOkHttp
+
+@OptIn(ExperimentalCoroutinesApi::class)
+class TiktokDownloadRepositoryTest {
+
+    val tiktokVideoUrl = "https://www.tiktok.com/@club27z/video/7109765698943012101"
+    val tiktokSlideUrl = "https://vm.tiktok.com/ZM2mksXCA/"
+
+    val repo = TiktokDownloadRepository()
+
+
+    @Test
+    fun downloadVideo(): Unit = runTest{
+        printing(repo.downloadPage(tiktokVideoUrl))
+    }
+
+    @Test
+    fun downloadSlide(): Unit = runTest{
+        printing(repo.downloadPage(tiktokSlideUrl))
+    }
+
+    private fun printing(dataVideo: DataVideo?){
+        assertNotNull(dataVideo)
+        println(dataVideo)
+        dataVideo!!.sources.forEach {
+            println(it)
+        }
+    }
+
+    // TODO https://vm.tiktok.com/ZM2fQTRgD/ Checking Next
+    @Test
+    fun checkSlideDownload(){
+        val postUrl = "https://r.ssstik.top/index.sh"
+
+        //val data = "slides_data=eyIwIjp7InVybCI6Imh0dHBzOlwvXC9wMTYtc2lnbi12YS50aWt0b2tjZG4uY29tXC90b3MtdXNlYXN0MmEtaS1waG90b21vZGUtZXV0dHBcL2Y2ZTQ1MDkyZGZkYjQwNTFhMGYyNzk3NTBiNzFmZDI4fnRwbHYtcGhvdG9tb2RlLWltYWdlLmpwZWc%2FZnJvbT1waG90b21vZGUuQVdFTUVfREVUQUlMJngtZXhwaXJlcz0xNjg5Njk5NjAwJngtc2lnbmF0dXJlPU5ZTzNRbGZ5WVpyU2xUWnZ2cXIwUWdvVm5TayUzRCIsIndpZHRoIjo2NzUsImhlaWdodCI6NTAwfSwibWF4d2lkdGgiOjgyOCwibWF4aGVpZ2h0Ijo4MTEsIjEiOnsidXJsIjoiaHR0cHM6XC9cL3AxNi1zaWduLXZhLnRpa3Rva2Nkbi5jb21cL3Rvcy11c2Vhc3QyYS1pLXBob3RvbW9kZS1ldXR0cFwvNWJmYjQ2ZGU5YTRlNDJkYWFkMmRiOTI0YWFhYmQyMzF%2BdHBsdi1waG90b21vZGUtaW1hZ2UuanBlZz9mcm9tPXBob3RvbW9kZS5BV0VNRV9ERVRBSUwmeC1leHBpcmVzPTE2ODk2OTk2MDAmeC1zaWduYXR1cmU9V0FMN1NnM1JZSWE2ZUNjcFc4b1AxTzZPdWJRJTNEIiwid2lkdGgiOjgyOCwiaGVpZ2h0Ijo4MTF9LCJwYXR0ZXJuIjoiaHR0cHM6XC9cL3NmMTYtaWVzLW11c2ljLXNnLnRpa3Rva2Nkbi5jb21cL29ialwvdGlrdG9rLW9ialwvcGF0dGVyblwvNzc0MjdhZWE2NzhmMThiODQ1NzQwZmY5NDBmMWZkYzQuanNvbiIsIm11c2ljIjoiaHR0cHM6XC9cL3NmMTYtaWVzLW11c2ljLXZhLnRpa3Rva2Nkbi5jb21cL29ialwvbXVzaWNhbGx5LW1hbGl2YS1vYmpcLzcyMTk3NTg0MTE2OTAxODM0MjkubXAzIiwiaXRlbV9pZCI6IjcyNTEzNjYzNTkyMDI3OTQ3NzgifQ%3D%3D"
+        //val data = "slides_data=eyIwIjp7InVybCI6Imh0dHBzOlwvXC9wMTYtc2lnbi12YS50aWt0b2tjZG4uY29tXC90b3MtdXNlYXN0MmEtaS1waG90b21vZGUtZXV0dHBcL2Y2ZTQ1MDkyZGZkYjQwNTFhMGYyNzk3NTBiNzFmZDI4fnRwbHYtcGhvdG9tb2RlLWltYWdlLmpwZWc/ZnJvbT1waG90b21vZGUuQVdFTUVfREVUQUlMJngtZXhwaXJlcz0xNjg5Njk5NjAwJngtc2lnbmF0dXJlPU5ZTzNRbGZ5WVpyU2xUWnZ2cXIwUWdvVm5TayUzRCIsIndpZHRoIjo2NzUsImhlaWdodCI6NTAwfSwibWF4d2lkdGgiOjgyOCwibWF4aGVpZ2h0Ijo4MTEsIjEiOnsidXJsIjoiaHR0cHM6XC9cL3AxNi1zaWduLXZhLnRpa3Rva2Nkbi5jb21cL3Rvcy11c2Vhc3QyYS1pLXBob3RvbW9kZS1ldXR0cFwvNWJmYjQ2ZGU5YTRlNDJkYWFkMmRiOTI0YWFhYmQyMzF+dHBsdi1waG90b21vZGUtaW1hZ2UuanBlZz9mcm9tPXBob3RvbW9kZS5BV0VNRV9ERVRBSUwmeC1leHBpcmVzPTE2ODk2OTk2MDAmeC1zaWduYXR1cmU9V0FMN1NnM1JZSWE2ZUNjcFc4b1AxTzZPdWJRJTNEIiwid2lkdGgiOjgyOCwiaGVpZ2h0Ijo4MTF9LCJwYXR0ZXJuIjoiaHR0cHM6XC9cL3NmMTYtaWVzLW11c2ljLXNnLnRpa3Rva2Nkbi5jb21cL29ialwvdGlrdG9rLW9ialwvcGF0dGVyblwvNzc0MjdhZWE2NzhmMThiODQ1NzQwZmY5NDBmMWZkYzQuanNvbiIsIm11c2ljIjoiaHR0cHM6XC9cL3NmMTYtaWVzLW11c2ljLXZhLnRpa3Rva2Nkbi5jb21cL29ialwvbXVzaWNhbGx5LW1hbGl2YS1vYmpcLzcyMTk3NTg0MTE2OTAxODM0MjkubXAzIiwiaXRlbV9pZCI6IjcyNTEzNjYzNTkyMDI3OTQ3NzgifQ=="
+
+          val data = "slides_data=eyIwIjp7InVybCI6Imh0dHBzOlwvXC9wMTYtc2lnbi12YS50aWt0b2tjZG4uY29tXC90b3MtdXNlYXN0MmEtaS1waG90b21vZGUtZXV0dHBcL2Y2ZTQ1MDkyZGZkYjQwNTFhMGYyNzk3NTBiNzFmZDI4fnRwbHYtcGhvdG9tb2RlLWltYWdlLmpwZWc%2FZnJvbT1waG90b21vZGUuQVdFTUVfREVUQUlMJngtZXhwaXJlcz0xNjg5Njk5NjAwJngtc2lnbmF0dXJlPU5ZTzNRbGZ5WVpyU2xUWnZ2cXIwUWdvVm5TayUzRCIsIndpZHRoIjo2NzUsImhlaWdodCI6NTAwfSwibWF4d2lkdGgiOjgyOCwibWF4aGVpZ2h0Ijo4MTEsIjEiOnsidXJsIjoiaHR0cHM6XC9cL3AxNi1zaWduLXZhLnRpa3Rva2Nkbi5jb21cL3Rvcy11c2Vhc3QyYS1pLXBob3RvbW9kZS1ldXR0cFwvNWJmYjQ2ZGU5YTRlNDJkYWFkMmRiOTI0YWFhYmQyMzF%2BdHBsdi1waG90b21vZGUtaW1hZ2UuanBlZz9mcm9tPXBob3RvbW9kZS5BV0VNRV9ERVRBSUwmeC1leHBpcmVzPTE2ODk2OTk2MDAmeC1zaWduYXR1cmU9V0FMN1NnM1JZSWE2ZUNjcFc4b1AxTzZPdWJRJTNEIiwid2lkdGgiOjgyOCwiaGVpZ2h0Ijo4MTF9LCJwYXR0ZXJuIjoiaHR0cHM6XC9cL3NmMTYtaWVzLW11c2ljLXNnLnRpa3Rva2Nkbi5jb21cL29ialwvdGlrdG9rLW9ialwvcGF0dGVyblwvNzc0MjdhZWE2NzhmMThiODQ1NzQwZmY5NDBmMWZkYzQuanNvbiIsIm11c2ljIjoiaHR0cHM6XC9cL3NmMTYtaWVzLW11c2ljLXZhLnRpa3Rva2Nkbi5jb21cL29ialwvbXVzaWNhbGx5LW1hbGl2YS1vYmpcLzcyMTk3NTg0MTE2OTAxODM0MjkubXAzIiwiaXRlbV9pZCI6IjcyNTEzNjYzNTkyMDI3OTQ3NzgifQ%3D%3D"
+
+        val c = NiceOkHttp(postUrl).baseResponse(
+            data = data,
+            method = NiceOkHttp.Method.POST
+        ){
+            addHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:101.0) Gecko/20100101 Firefox/101.0")
+            addHeader("Accept", "*/*")
+            addHeader("Accept-Language", "en-US,en;q=0.5")
+            addHeader("Accept-Encoding", "gzip, deflate, br")
+            addHeader("HX-Request", "true")
+            addHeader("HX-Trigger", "slides_generate")
+            addHeader("HX-Target", "slides_generate")
+            addHeader("HX-Current-URL", "https://ssstik.io/es")
+            addHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
+            addHeader("Origin", "https://ssstik.io")
+            addHeader("Connection", "keep-alive")
+            addHeader("Referer", "https://ssstik.io/")
+            addHeader("Sec-Fetch-Dest", "empty")
+            addHeader("Sec-Fetch-Mode", "cors")
+            addHeader("Sec-Fetch-Site", "cross-site")
+            addHeader("TE", "trailers")
+        }
+        println(c!!.headers)
+        return
+
+        val client = OkHttpClient()
+        val mediaType = "application/x-www-form-urlencoded; charset=UTF-8".toMediaType()
+        val body = data.toRequestBody(mediaType)
+        val request = okhttp3.Request.Builder()
+            .url(postUrl)
+            .post(body)
+            .addHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:101.0) Gecko/20100101 Firefox/101.0")
+            .addHeader("Accept", "*/*")
+            .addHeader("Accept-Language", "en-US,en;q=0.5")
+            .addHeader("Accept-Encoding", "gzip, deflate, br")
+            .addHeader("HX-Request", "true")
+            .addHeader("HX-Trigger", "slides_generate")
+            .addHeader("HX-Target", "slides_generate")
+            .addHeader("HX-Current-URL", "https://ssstik.io/es")
+            .addHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
+            .addHeader("Origin", "https://ssstik.io")
+            .addHeader("Connection", "keep-alive")
+            .addHeader("Referer", "https://ssstik.io/")
+            .addHeader("Sec-Fetch-Dest", "empty")
+            .addHeader("Sec-Fetch-Mode", "cors")
+            .addHeader("Sec-Fetch-Site", "cross-site")
+            .addHeader("TE", "trailers")
+            .build()
+        val response = client.newCall(request).execute()
+        println(response.headers)
+    }
+
+
+    val parserTxt = """
+        <div class="result u-shadow--black" id="mainpicture">
+          <div class="result_overlay pure-g">
+            <div class="pure-u-1 pure-u-sm-1-2">
+              <div class="flex-1 result_overlay_slides pure-u-1" style="margin: 0 auto; max-width: 453px">
+                <div class="splide">
+                  <div class="splide__track">
+                    <ul class="splide__list">
+                      <li class="splide__slide" style="width:100%;height:auto;">
+                        <div class="flex-container">
+                          <img src="https://tikcdn.io/ssstik/s/aHR0cHM6Ly9wMTYtc2lnbi12YS50aWt0b2tjZG4uY29tL3Rvcy1tYWxpdmEtaS1waG90b21vZGUtdXMvZDcwNGNkYTljMDM4NDllODhhNjU4ZWExOWUxZDExMGV+dHBsdi1waG90b21vZGUtaW1hZ2UuanBlZz9mcm9tPXBob3RvbW9kZS5BV0VNRV9ERVRBSUwmeC1leHBpcmVzPTE2ODkwNjk2MDAmeC1zaWduYXR1cmU9N1IyaVJOTFpQYXVaQm4wRjZEcVhpY3JKd3ZBJTNE" style="max-height:604px;max-width:453px;">
+                          <a href="https://tikcdn.io/ssstik/aHR0cHM6Ly9wMTYtc2lnbi12YS50aWt0b2tjZG4uY29tL3Rvcy1tYWxpdmEtaS1waG90b21vZGUtdXMvZDcwNGNkYTljMDM4NDllODhhNjU4ZWExOWUxZDExMGV+dHBsdi1waG90b21vZGUtaW1hZ2UuanBlZz9mcm9tPXBob3RvbW9kZS5BV0VNRV9ERVRBSUwmeC1leHBpcmVzPTE2ODkwNjk2MDAmeC1zaWduYXR1cmU9N1IyaVJOTFpQYXVaQm4wRjZEcVhpY3JKd3ZBJTNE" class="pure-button pure-button-primary is-center u-bl dl-button download_link slide notranslate" download>Download this slide</a>
+                        </div>
+                      </li>
+                      <li class="splide__slide" style="width:100%;height:auto;">
+                        <div class="flex-container">
+                          <img src="https://tikcdn.io/ssstik/s/aHR0cHM6Ly9wMTYtc2lnbi12YS50aWt0b2tjZG4uY29tL3Rvcy1tYWxpdmEtaS1waG90b21vZGUtdXMvMWJiMzg5ZTdmNmE3NGM5OWFmYTNlYjYyYTNkZDE2ODl+dHBsdi1waG90b21vZGUtaW1hZ2UuanBlZz9mcm9tPXBob3RvbW9kZS5BV0VNRV9ERVRBSUwmeC1leHBpcmVzPTE2ODkwNjk2MDAmeC1zaWduYXR1cmU9JTJCWktETEEydmF3c3lidGdJVWpCbEt4d0R6JTJGayUzRA==" style="max-height:604px;max-width:453px;">
+                          <a href="https://tikcdn.io/ssstik/aHR0cHM6Ly9wMTYtc2lnbi12YS50aWt0b2tjZG4uY29tL3Rvcy1tYWxpdmEtaS1waG90b21vZGUtdXMvMWJiMzg5ZTdmNmE3NGM5OWFmYTNlYjYyYTNkZDE2ODl+dHBsdi1waG90b21vZGUtaW1hZ2UuanBlZz9mcm9tPXBob3RvbW9kZS5BV0VNRV9ERVRBSUwmeC1leHBpcmVzPTE2ODkwNjk2MDAmeC1zaWduYXR1cmU9JTJCWktETEEydmF3c3lidGdJVWpCbEt4d0R6JTJGayUzRA==" class="pure-button pure-button-primary is-center u-bl dl-button download_link slide notranslate" download>Download this slide</a>
+                        </div>
+                      </li>
+                      <li class="splide__slide" style="width:100%;height:auto;">
+                        <div class="flex-container">
+                          <img src="https://tikcdn.io/ssstik/s/aHR0cHM6Ly9wMTYtc2lnbi12YS50aWt0b2tjZG4uY29tL3Rvcy1tYWxpdmEtaS1waG90b21vZGUtdXMvNjcwYzcyOWM0NDgwNDRmOGE5ZTc0NzVjZjdjYWNlZTh+dHBsdi1waG90b21vZGUtaW1hZ2UuanBlZz9mcm9tPXBob3RvbW9kZS5BV0VNRV9ERVRBSUwmeC1leHBpcmVzPTE2ODkwNjk2MDAmeC1zaWduYXR1cmU9cWR2Z293NFo5R3RQWXBqc1R1cG54ZERhZzhvJTNE" style="max-height:604px;max-width:453px;">
+                          <a href="https://tikcdn.io/ssstik/aHR0cHM6Ly9wMTYtc2lnbi12YS50aWt0b2tjZG4uY29tL3Rvcy1tYWxpdmEtaS1waG90b21vZGUtdXMvNjcwYzcyOWM0NDgwNDRmOGE5ZTc0NzVjZjdjYWNlZTh+dHBsdi1waG90b21vZGUtaW1hZ2UuanBlZz9mcm9tPXBob3RvbW9kZS5BV0VNRV9ERVRBSUwmeC1leHBpcmVzPTE2ODkwNjk2MDAmeC1zaWduYXR1cmU9cWR2Z293NFo5R3RQWXBqc1R1cG54ZERhZzhvJTNE" class="pure-button pure-button-primary is-center u-bl dl-button download_link slide notranslate" download>Download this slide</a>
+                        </div>
+                      </li>
+                      <li class="splide__slide" style="width:100%;height:auto;">
+                        <div class="flex-container">
+                          <img src="https://tikcdn.io/ssstik/s/aHR0cHM6Ly9wMTYtc2lnbi12YS50aWt0b2tjZG4uY29tL3Rvcy1tYWxpdmEtaS1waG90b21vZGUtdXMvZmM1NGVkYWM1ZWFkNDZkMjhhYzI1MDU1OWE4ZGE0Mzd+dHBsdi1waG90b21vZGUtaW1hZ2UuanBlZz9mcm9tPXBob3RvbW9kZS5BV0VNRV9ERVRBSUwmeC1leHBpcmVzPTE2ODkwNjk2MDAmeC1zaWduYXR1cmU9UzdCOERnWDdNRmdXTEtNUHN3OVl0ZTJtemdzJTNE" style="max-height:604px;max-width:453px;">
+                          <a href="https://tikcdn.io/ssstik/aHR0cHM6Ly9wMTYtc2lnbi12YS50aWt0b2tjZG4uY29tL3Rvcy1tYWxpdmEtaS1waG90b21vZGUtdXMvZmM1NGVkYWM1ZWFkNDZkMjhhYzI1MDU1OWE4ZGE0Mzd+dHBsdi1waG90b21vZGUtaW1hZ2UuanBlZz9mcm9tPXBob3RvbW9kZS5BV0VNRV9ERVRBSUwmeC1leHBpcmVzPTE2ODkwNjk2MDAmeC1zaWduYXR1cmU9UzdCOERnWDdNRmdXTEtNUHN3OVl0ZTJtemdzJTNE" class="pure-button pure-button-primary is-center u-bl dl-button download_link slide notranslate" download>Download this slide</a>
+                        </div>
+                      </li>
+                      <li class="splide__slide" style="width:100%;height:auto;">
+                        <div class="flex-container">
+                          <img src="https://tikcdn.io/ssstik/s/aHR0cHM6Ly9wMTYtc2lnbi12YS50aWt0b2tjZG4uY29tL3Rvcy1tYWxpdmEtaS1waG90b21vZGUtdXMvZTFhYzAwN2M2MzdkNGNhMmI5Mzk4N2Q1ZTUxNTQ4NjB+dHBsdi1waG90b21vZGUtaW1hZ2UuanBlZz9mcm9tPXBob3RvbW9kZS5BV0VNRV9ERVRBSUwmeC1leHBpcmVzPTE2ODkwNjk2MDAmeC1zaWduYXR1cmU9WnZLUnVJcHY0S2RwSjNvRUc3SHdOQ290V05FJTNE" style="max-height:604px;max-width:453px;">
+                          <a href="https://tikcdn.io/ssstik/aHR0cHM6Ly9wMTYtc2lnbi12YS50aWt0b2tjZG4uY29tL3Rvcy1tYWxpdmEtaS1waG90b21vZGUtdXMvZTFhYzAwN2M2MzdkNGNhMmI5Mzk4N2Q1ZTUxNTQ4NjB+dHBsdi1waG90b21vZGUtaW1hZ2UuanBlZz9mcm9tPXBob3RvbW9kZS5BV0VNRV9ERVRBSUwmeC1leHBpcmVzPTE2ODkwNjk2MDAmeC1zaWduYXR1cmU9WnZLUnVJcHY0S2RwSjNvRUc3SHdOQ290V05FJTNE" class="pure-button pure-button-primary is-center u-bl dl-button download_link slide notranslate" download>Download this slide</a>
+                        </div>
+                      </li>
+                      <li class="splide__slide" style="width:100%;height:auto;">
+                        <div class="flex-container">
+                          <img src="https://tikcdn.io/ssstik/s/aHR0cHM6Ly9wMTYtc2lnbi12YS50aWt0b2tjZG4uY29tL3Rvcy1tYWxpdmEtaS1waG90b21vZGUtdXMvNjY4NTJmMDQyOGM1NGIyYmIyNDcyZDlkY2U5NzYxZDV+dHBsdi1waG90b21vZGUtaW1hZ2UuanBlZz9mcm9tPXBob3RvbW9kZS5BV0VNRV9ERVRBSUwmeC1leHBpcmVzPTE2ODkwNjk2MDAmeC1zaWduYXR1cmU9ekFxS3NjN1duN3UxS3V5b1l4cnl2eWM4JTJCWFUlM0Q=" style="max-height:604px;max-width:453px;">
+                          <a href="https://tikcdn.io/ssstik/aHR0cHM6Ly9wMTYtc2lnbi12YS50aWt0b2tjZG4uY29tL3Rvcy1tYWxpdmEtaS1waG90b21vZGUtdXMvNjY4NTJmMDQyOGM1NGIyYmIyNDcyZDlkY2U5NzYxZDV+dHBsdi1waG90b21vZGUtaW1hZ2UuanBlZz9mcm9tPXBob3RvbW9kZS5BV0VNRV9ERVRBSUwmeC1leHBpcmVzPTE2ODkwNjk2MDAmeC1zaWduYXR1cmU9ekFxS3NjN1duN3UxS3V5b1l4cnl2eWM4JTJCWFUlM0Q=" class="pure-button pure-button-primary is-center u-bl dl-button download_link slide notranslate" download>Download this slide</a>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="pure-u-1 pure-u-sm-1-2">
+              <div class="pure-g p-abs">
+                <div class="pure-u-4-24">
+                  <img class="u-round u-shadow--black result_author" src="https://tikcdn.io/ssstik/a/aHR0cHM6Ly9wMTYtc2lnbi12YS50aWt0b2tjZG4uY29tL3Rvcy1tYWxpdmEtYXZ0LTAwNjgvNTkxMTFlMDgzM2E0N2MyZTU5ZmQ2MmU2Mzc0YTlmYzJ+YzVfMTAweDEwMC53ZWJwP3gtZXhwaXJlcz0xNjg3ODYwMDAwJngtc2lnbmF0dXJlPWJEWVRXeURkR1VVSnV0TkJuJTJCMyUyQkNxV0RhbkklM0Q=" alt="Catajoke">
+                </div>
+                <div class="pure-u-20-24 pd-lr">
+                  <h2 class="text-shadow--black">Catajoke</h2>
+                  <p class="maintext slidetext text-shadow--black">пoдпишиc :3 #смайл #кот #кошки </p>
+                </div>
+              </div>
+              <div class="loader loader--style8 htmx-indicator pure-u-1" id="slider_loader">
+                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="margin: auto; background: rgba(0, 0, 0, 0) none repeat scroll 0% 0%; display: block; border-radius: 50%;margin-bottom: 10px;" width="60px" height="60px" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid">
+                  <circle cx="50" cy="50" r="32" stroke-width="8" stroke="#0057b7" stroke-dasharray="50.26548245743669 50.26548245743669" fill="none" stroke-linecap="round">
+                    <animateTransform attributeName="transform" type="rotate" dur="1.8518518518518516s" repeatCount="indefinite" keyTimes="0;1" values="0 50 50;360 50 50"></animateTransform>
+                  </circle>
+                  <circle cx="50" cy="50" r="23" stroke-width="8" stroke="#ffdd00" stroke-dasharray="36.12831551628262 36.12831551628262" stroke-dashoffset="36.12831551628262" fill="none" stroke-linecap="round">
+                    <animateTransform attributeName="transform" type="rotate" dur="1.8518518518518516s" repeatCount="indefinite" keyTimes="0;1" values="0 50 50;-360 50 50"></animateTransform>
+                  </circle>
+                </svg>
+              </div>
+              <div id="trending-actions" class="trending-actions">
+                <div class="d-flex flex-1 align-items-center justify-content-start">
+                  <div>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-thumbs-up">
+                      <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path>
+                    </svg>
+                  </div>
+                  <div> 664.1K </div>
+                </div>
+                <div class="d-flex flex-1 align-items-center justify-content-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-message-square">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                  </svg>
+                  <div> 4.5K </div>
+                </div>
+                <div class="d-flex flex-1 align-items-center justify-content-end">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-share-2">
+                    <circle cx="18" cy="5" r="3"></circle>
+                    <circle cx="6" cy="12" r="3"></circle>
+                    <circle cx="18" cy="19" r="3"></circle>
+                    <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                    <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                  </svg>
+                  <div> 137.2K </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        </div>
+        <script>
+          if (window.innerHeight > window.innerWidth) {
+            document.getElementById('trending-actions').style.display = 'none';
+          }
+        </script>
+        <style>
+          .splide__slide img {
+            width: inherit;
+            height: fit-content;
+            align-self: center;
+            margin: 0 auto;
+          }
+
+          .splide__slide .flex-container {
+            width: 100%;
+            height: 100%;
+            max-width:
+              453 px;
+            max-height:
+              604 px;
+            background: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          }
+
+          .splide,
+          .splide__slide {
+            flex: auto;
+          }
+
+          .splide__pagination {
+            padding: 0;
+            position: absolute;
+            left: 0;
+            width: 100%;
+            bottom: calc(10% + 50px);
+          }
+
+          .splide__pagination li {
+            list-style-type: none;
+            display: inline-block;
+            line-height: 1;
+            margin: 0;
+            margin-left: 5px;
+            margin-right: 5px;
+          }
+
+          .splide__pagination__page {
+            border-radius: 50%;
+            height: 15px;
+            width: 15px;
+            border: 2px solid #000;
+            background: #fff;
+          }
+
+          .splide__pagination__page.is-active {
+            background: #777;
+            border: 2px solid #333;
+          }
+
+          a.pure-button.slide {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            margin: 0;
+          }
+
+          @media (max-width:48em) {
+            .splide__pagination li {
+              list-style-type: none;
+              display: inline-block;
+              line-height: 1;
+              margin: 0;
+              margin-left: 5px;
+              margin-right: 5px;
+              margin-bottom: 0px;
+            }
+
+            .splide__pagination__page {
+              height: 8px;
+              width: 8px;
+              padding: 1px;
+            }
+          }
+
+          .home-menu .pure-menu-heading {
+            margin-left: 0;
+          }
+
+          .adsbygoogle {
+            overflow: hidden;
+          }
+
+          .result_overlay_buttons {
+            margin-top: 97px;
+          }
+
+          a.pure-button.dl-button {
+            padding: 0.7em 0.5em;
+          }
+
+          @media (max-width:900px) {
+            .dl-button {
+              font-size: 0.9em;
+            }
+
+            .maintext {
+              font-size: 0.85em;
+            }
+          }
+
+          #mainpicture .result_author {
+            border-radius: 50%;
+            float: left;
+            width: 100%;
+            max-width: 100px;
+            margin-bottom: 0.5em;
+          }
+
+          #mainpicture h2 {
+            width: 100%;
+            text-align: left;
+            line-height: 1;
+          }
+
+          .pd-lr {
+            padding-left: 0.6em;
+            padding-right: 0.6em;
+          }
+
+          .maintext.slidetext {
+            text-align: left;
+            margin: 0;
+            padding: 0;
+          }
+
+          .p-abs {
+            position: absolute;
+            z-index: 3;
+            margin: 0 1em;
+            top: 1em;
+          }
+
+          @media (max-width: 48em) {
+            .result_overlay_buttons {
+              max-width: 100%;
+              margin-left: 1em;
+            }
+          }
+
+          @media (max-width: 35.5em) {
+            .result_overlay_buttons {
+              max-width: 100%;
+              margin: 0;
+            }
+
+            .p-abs {
+              margin: 1em;
+            }
+          }
+
+          @media (width: 568px) {
+            .result_overlay_buttons {
+              max-width: 100%;
+              margin-left: 1em;
+              margin-top: 100px;
+            }
+          }
+
+          @media (max-width: 430px) {
+            .maintext.slidetext {
+              font-size: 0.7em;
+            }
+          }
+
+          .text-shadow--black {
+            text-shadow: 1px 1px 2px black;
+          }
+        </style>
+    """.trimIndent()
+    @Test
+    fun testinParser(){
+        val document = Jsoup.parse(parserTxt)
+        val (name, avatar) = document.selector("div>img.result_author[alt][src]")
+        val (description) = document.selector("div>p.maintext")
+
+        println(name,"")
+        println(description)
+
+        val s = document.select("div>a[class^=pure]:not(:contains(this slide))")
+        println(s)
+    }
+
+    fun println(vararg messages: String){
+        messages.forEach {
+            kotlin.io.println(it)
+        }
+    }
+
+
+
+    private val regexAttr = """(.*?)\[""".toRegex()
+    private val regexAttrMultiples = """\[(\w+)\]""".toRegex()
+
+    fun org.jsoup.nodes.Document.selector(cssQuery: String): List<String> {
+        // Default Text
+        // Example div>img.result_author[alt]
+        if(regexAttr.containsMatchIn(cssQuery)){
+            val (select) = regexAttr.find(cssQuery)!!.destructured
+
+            val filter = this.select(select).first()!!
+
+            // Now Check If Multiple Attrs
+            val listAtt = regexAttrMultiples.findAll(cssQuery).map {
+                it.destructured.component1()
+            }.map {
+                filter.attr(it)
+            }
+            return listAtt.toList()
+        }
+        return listOf(this.select(cssQuery).text())
+
+    }
+
+
+    @Test
+    fun mainx() {
+        val html = """
+        <div>
+            <a class="pure-link">Link 1</a>
+            <a class="pure-link logo">Logo Link</a>
+            <a class="pure-link">Link 2</a>
+        </div>
+    """.trimIndent()
+
+        val doc = Jsoup.parse(html)
+        val elements = doc.select("div>a[class^=pure]:not(:contains(Logo Link))")
+
+        for (element in elements) {
+            kotlin.io.println(element.text())
+        }
+    }
+
+
+}
