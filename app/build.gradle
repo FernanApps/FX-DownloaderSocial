@@ -16,7 +16,7 @@ if (keystorePropertiesFile.exists()) {
 
 
 ext {
-    appVersion = '0.0.42'
+    appVersion = '0.0.421'
 }
 
 
