@@ -36,15 +36,17 @@ jobs:
       run: chmod +x gradlew
 
     - name: Decode Keystore
-      uses: timheuer/base64-to-file@v1
+      uses: timheuer/base64-to-file@v1.2
       with:
-          fileName: 'app/keys/FX-DownloaderSocial.jks'
+          fileName: 'FX-DownloaderSocial.jks'
+          fileDir: './app/keys/'
           encodedString: ${{ secrets.KEYSTORE }}
 
     - name: Decode Keystore Properties
-      uses: timheuer/base64-to-file@v1
+      uses: timheuer/base64-to-file@v1.2
       with:
           fileName: 'keystore.properties'
+          fileDir: './'
           encodedString: ${{ secrets.KEYSTORE_PROPERTIES }}
 
     - name: Check files
