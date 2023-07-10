@@ -7,12 +7,18 @@ plugins {
 
 def keystorePropertiesFile = rootProject.file("keystore.properties")
 def keystoreProperties = new Properties()
-keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+} else {
+    // Manejo del caso en el que el archivo no existe
+    println "El archivo keystore.properties no existe."
+}
 
 
 ext {
-    appVersion = '0.0.41'
+    appVersion = '0.0.42'
 }
+
 
 android {
 
