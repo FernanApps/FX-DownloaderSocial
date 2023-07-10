@@ -35,9 +35,6 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
 
-    - name: Generate Shadow Jar
-      run: ./gradlew Core:shadowJarCore
-
     - name: Decode Keystore
       uses: timheuer/base64-to-file@v1
       with:
@@ -55,14 +52,15 @@ jobs:
          ls
          ls app/keys/
 
+    - name: Generate Shadow Jar
+      run: ./gradlew Core:shadowJarCore
+
     - name: Get Version App
       id: get_version
       run: |
            app_version=$(./gradlew -q app:printAppVersion | tail -n 1)
            echo -e "Version is $app_version"
            echo "app_version=$app_version" >> $GITHUB_OUTPUT
-
-
 
     - name: Build and sign release APK
       run: |
