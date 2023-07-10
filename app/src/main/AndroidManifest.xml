@@ -49,7 +49,7 @@
             android:label="@string/title_activity_share"
             android:theme="@style/Theme.FernanTikTokDownloader" />
 
-        <provider
+        <!--<provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"
             android:exported="false"
@@ -57,7 +57,7 @@
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths" />
-        </provider>
+        </provider>-->
 
         <receiver
             android:name=".ShareButtonReceiver"
