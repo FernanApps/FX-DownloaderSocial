@@ -35,6 +35,26 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
 
+    - name: Generate Shadow Jar
+      run: ./gradlew Core:shadowJarCore
+
+    - name: Decode Keystore
+      uses: timheuer/base64-to-file@v1
+      with:
+          fileName: 'app/keys/FX-DownloaderSocial.jks'
+          encodedString: ${{ secrets.KEYSTORE }}
+
+    - name: Decode Keystore Properties
+      uses: timheuer/base64-to-file@v1
+      with:
+          fileName: 'keystore.properties'
+          encodedString: ${{ secrets.KEYSTORE_PROPERTIES }}
+
+    - name: Check files
+      run: |
+         ls
+         ls app/keys/
+
     - name: Get Version App
       id: get_version
       run: |
@@ -42,25 +62,10 @@ jobs:
            echo -e "Version is $app_version"
            echo "app_version=$app_version" >> $GITHUB_OUTPUT
 
-    - name: Generate Shadow Jar
-      run: ./gradlew Core:shadowJarCore
 
-    - name: Decode Keystore
-      uses: timheuer/base64-to-file@v1
-      with:
-           fileName: 'app/keys/FX-DownloaderSocial.jks'
-           encodedString: ${{ secrets.KEYSTORE }}
-
-    - name: Decode Keystore Properties
-      uses: timheuer/base64-to-file@v1
-      with:
-           fileName: 'keystore.properties'
-           encodedString: ${{ secrets.KEYSTORE_PROPERTIES }}
 
     - name: Build and sign release APK
       run: |
-        ls
-        ls app/keys/
         release_data="${{ secrets.RELEASE_DATA }}"
         IFS='|' read -r username password <<< "$release_data"
 
