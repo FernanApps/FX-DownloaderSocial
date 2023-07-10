@@ -63,7 +63,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         getSharedTextUrlAndSet(intent)
 
-
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) !=
             PackageManager.PERMISSION_GRANTED
         ) {
