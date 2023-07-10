@@ -47,9 +47,8 @@ jobs:
 
     - name: Build and sign release APK
       run: |
-              - |
-                release_data=${{ secrets.RELEASE_DATA }}
-                IFS='|' read -r username password <<< "$release_data"
+              release_data=${{ secrets.RELEASE_DATA }}
+              IFS='|' read -r username password <<< "$release_data"
 
               export STORE_PASSWORD="$password"
               export KEY_ALIAS="$username"
