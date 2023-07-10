@@ -47,9 +47,11 @@ render.experimental.xml
 keys/
 *.jks
 *.keystore
-keys/*.keystore
-keys/*.jks
-keys/data.txt
+app/keys/
+app/keys/*.keystore
+app/keys/*.jks
+app/keys/data.txt
+keystore.properties
 
 # Google Services (e.g. APIs or Firebase)
 google-services.json

@@ -5,6 +5,10 @@ plugins {
     id 'com.google.dagger.hilt.android'
 }
 
+def keystorePropertiesFile = rootProject.file("keystore.properties")
+def keystoreProperties = new Properties()
+keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+
 
 ext {
     appVersion = '0.0.323'
@@ -14,6 +18,15 @@ android {
 
     namespace 'pe.fernan.downloader.social'
     compileSdk 33
+
+    signingConfigs {
+        release {
+            storeFile file(keystoreProperties['storeFile'])
+            storePassword keystoreProperties['storePassword']
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+        }
+    }
 
     defaultConfig {
         applicationId "pe.fernan.downloader.social"
@@ -32,6 +45,8 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+
         }
     }
     compileOptions {
