@@ -11,7 +11,7 @@ keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
 
 ext {
-    appVersion = '0.0.4'
+    appVersion = '0.0.41'
 }
 
 android {
@@ -27,6 +27,7 @@ android {
             keyPassword keystoreProperties['keyPassword']
         }
     }
+    compileSdkVersion 33
 
     defaultConfig {
         applicationId "pe.fernan.downloader.social"
