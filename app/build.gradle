@@ -5,6 +5,11 @@ plugins {
     id 'com.google.dagger.hilt.android'
 }
 
+
+ext {
+    appVersion = '0.0.323'
+}
+
 android {
 
     namespace 'pe.fernan.downloader.social'
@@ -14,8 +19,8 @@ android {
         applicationId "pe.fernan.downloader.social"
         minSdk 21
         targetSdk 33
-        versionCode 1
-        versionName "1.0"
+        versionCode ((System.currentTimeMillis() / 60000).toInteger())
+        versionName appVersion
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -47,6 +52,9 @@ android {
         resources {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
         }
+    }
+    lint {
+        baseline = file("lint-baseline.xml")
     }
 }
 
@@ -108,4 +116,10 @@ dependencies {
 
     debugImplementation 'androidx.compose.ui:ui-tooling'
     debugImplementation 'androidx.compose.ui:ui-test-manifest'
+}
+
+task printAppVersion {
+    doLast {
+        println project.property('appVersion')
+    }
 }

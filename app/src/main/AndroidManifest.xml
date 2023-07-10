@@ -27,7 +27,6 @@
         <activity
             android:name=".ui.MainActivity"
             android:exported="true"
-            android:label="@string/app_name"
             android:launchMode="singleTask"
             android:theme="@style/Theme.FernanTikTokDownloader">
             <intent-filter>

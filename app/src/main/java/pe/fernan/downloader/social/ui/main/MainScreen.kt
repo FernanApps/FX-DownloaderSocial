@@ -52,6 +52,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import pe.fernan.downloader.social.BuildConfig
 import pe.fernan.downloader.social.R
 import pe.fernan.downloader.social.core.model.DataState
 import pe.fernan.downloader.social.core.model.Download
@@ -101,6 +102,12 @@ fun MainScreen(viewModel: MainViewModel) {
                 color = colorResource(id = R.color.ic_launcher_background)
             )
         )
+        val versionName = BuildConfig.VERSION_NAME
+        val versionCode = BuildConfig.VERSION_CODE
+
+        Text(text = versionName.toString(), modifier = Modifier.padding(8.dp))
+
+
 
         ClipboardTextField(
             value = downloadUrl,

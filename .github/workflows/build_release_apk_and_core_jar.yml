@@ -1,4 +1,4 @@
-name: Build and Publish Release Core Jar
+name: Build Release APK, Core Jar and Publish
 
 on:
   push:
@@ -38,20 +38,39 @@ jobs:
     - name: Get Version App
       id: get_version
       run: |
-           library_version=$(./gradlew -q Core:printLibraryVersion | tail -n 1)
-           echo -e "Version is $library_version"
-           echo "library_version=$library_version" >> $GITHUB_OUTPUT
+           app_version=$(./gradlew -q app:printAppVersion | tail -n 1)
+           echo -e "Version is $app_version"
+           echo "app_version=$app_version" >> $GITHUB_OUTPUT
 
     - name: Generate Shadow Jar
       run: ./gradlew Core:shadowJarCore
+
+    - name: Build and sign release APK
+      run: |
+              - |
+                release_data=${{ secrets.RELEASE_DATA }}
+                IFS='|' read -r username password <<< "$release_data"
+
+              export STORE_PASSWORD="$password"
+              export KEY_ALIAS="$username"
+
+              curl -o keystore.jks ${{ secrets.RELEASE_KEYSTORE_URL }}
+              echo "$STORE_PASSWORD" > keystore.password
+              echo "$KEY_ALIAS" > key.alias
+
+              # Ejecutar el comando de firma de la aplicación
+              ./gradlew assembleRelease -Pandroid.injected.signing.store.file=keystore.jks -Pandroid.injected.signing.store.passwordFile=keystore.password -Pandroid.injected.signing.key.aliasFile=key.alias
+
+              # Realizar cualquier otro paso necesario para la publicación
+
 
     - name: Create Release Jar
       uses: marvinpinto/action-automatic-releases@latest
       with:
         repo_token: "${{ secrets.ATOKEN }}"
-        automatic_release_tag: ${{ steps.get_version.outputs.library_version }}
+        automatic_release_tag: ${{ steps.get_version.outputs.app_version }}
         prerelease: false
-        title: "v¬${{ steps.get_version.outputs.library_version }}"
+        title: "v¬${{ steps.get_version.outputs.app_version }}"
         files: |
           Core/build/libs/shadowJarCore.jar
 

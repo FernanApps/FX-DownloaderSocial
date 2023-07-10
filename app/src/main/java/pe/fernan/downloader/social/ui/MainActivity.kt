@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.core.content.ContextCompat
 import androidx.work.OneTimeWorkRequest
 import dagger.hilt.android.AndroidEntryPoint
+import pe.fernan.downloader.social.BuildConfig
 import pe.fernan.downloader.social.ui.main.MainScreen
 import pe.fernan.downloader.social.ui.theme.FernanTikTokDownloaderTheme
 import timber.log.Timber
@@ -61,6 +62,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         getSharedTextUrlAndSet(intent)
+
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) !=
             PackageManager.PERMISSION_GRANTED
