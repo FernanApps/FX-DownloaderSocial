@@ -51,7 +51,9 @@ jobs:
 
     - name: Check files
       run: |
+         echo "My Files"
          ls
+         echo "My Keys"
          ls app/keys/
 
     - name: Generate Shadow Jar
@@ -66,17 +68,8 @@ jobs:
 
     - name: Build and sign release APK
       run: |
-        release_data="${{ secrets.RELEASE_DATA }}"
-        IFS='|' read -r username password <<< "$release_data"
-
-        export STORE_PASSWORD="$password"
-        export KEY_ALIAS="$username"
-
-        curl -o keystore.jks ${{ secrets.RELEASE_KEYSTORE_URL }}
-        echo "$STORE_PASSWORD" > keystore.password
-        echo "$KEY_ALIAS" > key.alias
         ./gradlew lintVitalRelease -Dlint.baselines.continue=true
-        ./gradlew assembleRelease -Pandroid.injected.signing.store.file=keystore.jks -Pandroid.injected.signing.store.passwordFile=keystore.password -Pandroid.injected.signing.key.aliasFile=key.alias
+        ./gradlew assembleRelease
 
     - name: Create Release Jar
       uses: marvinpinto/action-automatic-releases@latest

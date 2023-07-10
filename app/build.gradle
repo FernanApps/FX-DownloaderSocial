@@ -11,7 +11,7 @@ keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
 
 ext {
-    appVersion = '0.0.323'
+    appVersion = '0.0.4'
 }
 
 android {
