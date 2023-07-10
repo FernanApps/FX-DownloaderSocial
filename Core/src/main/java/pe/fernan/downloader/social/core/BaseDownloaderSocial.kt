@@ -5,7 +5,7 @@ import pe.fernan.downloader.social.core.model.DataVideo
 abstract class BaseDownloaderSocial {
     abstract val baseUrl: String
     abstract val regex: String
-    abstract operator fun get(url: String): DataVideo
+    abstract operator fun get(url: String): DataVideo?
 }
 
 /*
